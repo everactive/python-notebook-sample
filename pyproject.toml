@@ -5,7 +5,7 @@ description = "Library to support Everactive ENV+ EvalKit sample Python notebook
 authors = ["Rachel House <rachel.house@everactive.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<4.0"
+python = ">=3.8,<4.0"
 pandas = "^1.5.2"
 altair = "^4.2.0"
 requests = "^2.28.2"
