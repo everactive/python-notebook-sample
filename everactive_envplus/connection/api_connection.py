@@ -93,7 +93,11 @@ class ApiConnection:
             return response
 
     def get_paginated_results(
-        self, url: str, sort_by: str, page_size: int = DEFAULT_PAGE_SIZE
+        self,
+        url: str,
+        sort_by: str,
+        query_params: Optional[Dict] = {},
+        page_size: Optional[int] = DEFAULT_PAGE_SIZE,
     ):
         """Aggregate paginated GET results from Everactive API endpoints."""
         paginated_results = []
@@ -102,16 +106,23 @@ class ApiConnection:
         response = self._session.request(
             "GET",
             request_url,
-            params={"page": 1, "page-size": page_size, "sort-by": sort_by},
+            params={
+                "page": 1,
+                "page-size": page_size,
+                "sort-by": sort_by,
+                **query_params,
+            },
         )
 
         try:
+            log.debug(f"Requested URL: {response.__dict__['url']}")
+
             result = response.json()
 
             if "paginationInfo" in result.keys():
                 if (
                     result["paginationInfo"]["totalPages"]
-                    > result["paginationInfo"]["page"]
+                    >= result["paginationInfo"]["page"]
                 ):
                     log.debug(
                         f"Page: {result['paginationInfo']['page']}/"
@@ -130,6 +141,7 @@ class ApiConnection:
                                 "page": page,
                                 "page-size": page_size,
                                 "sort-by": sort_by,
+                                **query_params,
                             },
                         )
                         page_result = page_response.json()
