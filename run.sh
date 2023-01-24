@@ -3,11 +3,17 @@
 echo "Everactive ENV+ EvalKit Exploration Notebook (Dockerized)"
 echo ""
 
+# Pull Everactive API credentials if available as environs.
+CLIENT_ID="${EVERACTIVE_CLIENT_ID:-''}"
+CLIENT_SECRET="${EVERACTIVE_CLIENT_SECRET:-''}"
+
 # Start a Docker container with the current repo directory mounted as a volume.
 echo "Starting Docker container..."
 CONTAINER_ID=`docker run -it -d --rm \
     --name everactive-envplus-sample-notebook \
     -p 8888:8888 \
+    --env EVERACTIVE_CLIENT_ID=${CLIENT_ID} \
+    --env EVERACTIVE_CLIENT_SECRET=${CLIENT_SECRET} \
     -v $PWD:/repo \
 everactive-envplus bash` > /dev/null
 
