@@ -27,7 +27,7 @@ docker exec $CONTAINER_ID bash -c 'cd /repo; poetry run python -m ipykernel inst
 
 # Start Jupyterlab.
 echo "Starting JupyterLab..."
-docker exec $CONTAINER_ID bash -c 'cd /repo; jupyter lab --ip=0.0.0.0 --no-browser --allow-root &' > /dev/null 2>&1
+docker exec $CONTAINER_ID bash -c 'cd /repo/notebook; jupyter lab --ip=0.0.0.0 --no-browser --allow-root &' > /dev/null 2>&1
 
 # Pull out running notebook token and display localhost URL for user.
 RUNNING_LAB="$(docker exec $CONTAINER_ID bash -c 'jupyter lab list 2>&1')"

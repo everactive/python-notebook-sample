@@ -14,6 +14,3 @@ ENV PATH /root/.local/bin:$PATH
 RUN pip install \
     ipykernel==6.20.2 \
     jupyterlab==3.5.3
-    # ipython==8.8.0 \
-    # jupyter==1.0.0 \
-
