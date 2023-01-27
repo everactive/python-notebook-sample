@@ -28,8 +28,9 @@ class EveractiveApi:
         results = self._api.get_paginated_results(
             "ds/v1/eversensors",
             sort_by="mac-address",
-            query_params={"devkitBundled": True},
+            query_params={"devkitBundled": True, "type": "Environmental"},
         )
+
         return self._format_results(results, output_format)
 
     def get_eversensor_readings(

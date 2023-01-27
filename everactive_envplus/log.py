@@ -8,7 +8,7 @@ def get_logger() -> logging.Logger:
     level can be set via the LOG_LEVEL environment variable.
     """
 
-    log_level = os.getenv("LOG_LEVEL", "DEBUG").upper()
+    log_level = os.getenv("LOG_LEVEL", "INFO").upper()
 
     logging.config.dictConfig(
         {
