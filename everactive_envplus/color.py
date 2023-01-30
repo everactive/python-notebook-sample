@@ -1,8 +1,9 @@
-"""Defines the Everactive data viz color palette."""
+"""Contains the ColorPalette class that defines the Everactive data visualization
+color palette."""
 
 from typing import Optional
 
-DEFAULT_OPACITY = 100
+DEFAULT_INTENSITY = 100
 
 VIOLET = {
     "violet_20": "#EAD1F1",
@@ -121,52 +122,74 @@ COLOR_PALETTE = {
 
 
 class ColorPalette:
-    """Helper class to store and serve Everactive data viz color palette.
+    """Helper class to store and serve the Everactive data visualization color palette.
 
-    Usage:
-        ```
+    Typical usage example:
         palette = ColorPalette()
-        palette.violet()    # Hex code for violet at 100% opacity
-        palette.violet(50)  # Hex code for violet at 50% opacity
-        ```
+        palette.violet()    # Hex code for violet at 100% intensity
+        palette.violet(50)  # Hex code for violet at 50% intensity
     """
 
-    def violet(self, opacity: Optional[int] = None) -> str:
-        return self._get_color_hex("violet", opacity)
+    def violet(self, intensity: Optional[int] = None) -> str:
+        """Return string hex code for violet at specified int intensity.
+        Defaults to 100(%) intensity."""
+        return self._get_color_hex("violet", intensity)
 
-    def sky(self, opacity: Optional[int] = None) -> str:
-        return self._get_color_hex("sky", opacity)
+    def sky(self, intensity: Optional[int] = None) -> str:
+        """Return string hex code for sky at specified int intensity.
+        Defaults to 100(%) intensity."""
+        return self._get_color_hex("sky", intensity)
 
-    def midnight(self, opacity: Optional[int] = None) -> str:
-        return self._get_color_hex("midnight", opacity)
+    def midnight(self, intensity: Optional[int] = None) -> str:
+        """Return string hex code for midnight at specified int intensity.
+        Defaults to 100(%) intensity."""
+        return self._get_color_hex("midnight", intensity)
 
-    def chartreuse(self, opacity: Optional[int] = None) -> str:
-        return self._get_color_hex("chartreuse", opacity)
+    def chartreuse(self, intensity: Optional[int] = None) -> str:
+        """Return string hex code for chartreuse at specified int intensity.
+        Defaults to 100(%) intensity."""
+        return self._get_color_hex("chartreuse", intensity)
 
-    def dark_teal(self, opacity: Optional[int] = None) -> str:
-        return self._get_color_hex("dark_teal", opacity)
+    def dark_teal(self, intensity: Optional[int] = None) -> str:
+        """Return string hex code for dark teal at specified int intensity.
+        Defaults to 100(%) intensity."""
+        return self._get_color_hex("dark_teal", intensity)
 
-    def sand(self, opacity: Optional[int] = None) -> str:
-        return self._get_color_hex("sand", opacity)
+    def sand(self, intensity: Optional[int] = None) -> str:
+        """Return string hex code for sand at specified int intensity.
+        Defaults to 100(%) intensity."""
+        return self._get_color_hex("sand", intensity)
 
-    def charcoal(self, opacity: Optional[int] = None) -> str:
-        return self._get_color_hex("charcoal", opacity)
+    def charcoal(self, intensity: Optional[int] = None) -> str:
+        """Return string hex code for charcoal at specified int intensity.
+        Defaults to 100(%) intensity."""
+        return self._get_color_hex("charcoal", intensity)
 
-    def apricot(self, opacity: Optional[int] = None) -> str:
-        return self._get_color_hex("apricot", opacity)
+    def apricot(self, intensity: Optional[int] = None) -> str:
+        """Return string hex code for apricot at specified int intensity.
+        Defaults to 100(%) intensity."""
+        return self._get_color_hex("apricot", intensity)
 
     def _get_color_hex(
-        self, color: str, opacity: Optional[int] = DEFAULT_OPACITY
+        self, color: str, intensity: Optional[int] = DEFAULT_INTENSITY
     ) -> str:
-        """Return the hex code for the requested color at the requested opacity."""
-        if opacity is None:
-            opacity = DEFAULT_OPACITY
+        """Return the string hex code for the requested color at the requested
+        intensity level.
 
-        color_key = f"{color}_{opacity}"
+        Args:
+            color: String name of palette color (e.g. sky, dark_teal, apricot..)
+            intensity: Optional int to specify the intensity percentage level of the
+                requested color. Valid intensity levels are:
+                    20, 25, 33, 40, 50, 60, 67, 75, 80, 100
+        """
+        if intensity is None:
+            intensity = DEFAULT_INTENSITY
+
+        color_key = f"{color}_{intensity}"
 
         if color_key not in COLOR_PALETTE:
             raise KeyError(
-                f"Color {color} at opacity {opacity} does not exist in palette"
+                f"Color {color} at intensity {intensity} does not exist in palette"
             )
 
         return COLOR_PALETTE[color_key]

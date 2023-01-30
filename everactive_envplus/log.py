@@ -1,11 +1,21 @@
+"""Contains logging functionality for the everactive_envplus library."""
+
 import logging
 import logging.config
 import os
 
 
 def get_logger() -> logging.Logger:
-    """Return a logging.Logger object with a default logging level of INFO. Logging
-    level can be set via the LOG_LEVEL environment variable.
+    """Return a logging.Logger object with a default logging level of INFO.
+
+    Logging level can be set via the LOG_LEVEL environment variable.
+
+    Typical usage example:
+        import everactive_envplus.log as logger
+        log = logger.get_logger()
+
+        log.info("Log an info message")
+        log.error("Log an error message")
     """
 
     log_level = os.getenv("LOG_LEVEL", "INFO").upper()

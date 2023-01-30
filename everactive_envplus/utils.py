@@ -1,3 +1,5 @@
+"""Contains miscellaneous utility functions to support everactive_envplus library."""
+
 from typing import Iterable, Optional
 
 

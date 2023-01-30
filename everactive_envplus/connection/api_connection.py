@@ -1,6 +1,9 @@
+"""Contains the ApiConnection class that provides an Oauth connection to the
+Everactive Data Services API."""
+
 import os
 import urllib
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 import oauthlib
 import requests
@@ -16,16 +19,32 @@ DEFAULT_PAGE_SIZE = 500
 
 
 class ApiConnection:
-    """Class to provide API connection to the Everactive Edge API."""
+    """Class to provide API connection to the Everactive Data Services API.
+
+    Typical usage example:
+        # Supply API credentials explicitly.
+        connection = ApiConnection(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
+
+        # Or initialize and the class attempts to discover credentials from environs.
+        connection = ApiConnection()
+
+        connection.get(f"ds/v1/eversensors/{mac_address}/readings/last")
+        connection.get_paginated_results("ds/v1/eversensors")
+    """
 
     def __init__(
         self, client_id: Optional[str] = None, client_secret: Optional[str] = None
-    ):
-        """Construct an ApiConnection object.
+    ) -> None:
+        """Initialize an ApiConnection object and establish connection to the
+        Everactive Data Services API.
+
+        If API credentials are not provided as arguments, the object attempts to
+        discover the credentials as the EVERACTIVE_CLIENT_ID and
+        EVERACTIVE_CLIENT_SECRET environment variables.
 
         Args:
-            client_id:
-            client_secret
+            client_id: Optional string Everactive API client id credential
+            client_secret: Optional string Everactive API client secret credential
         """
 
         self._base_url = EVERACTIVE_API_BASE_URL
@@ -38,8 +57,20 @@ class ApiConnection:
 
     def _set_credentials(
         self, client_id: Optional[str] = None, client_secret: Optional[str] = None
-    ):
+    ) -> None:
+        """Discover and set the client id and client secret Everactive API credentials.
 
+        Args:
+            client_id: Optional string Everactive API client id credential
+            client_secret: Optional string Everactive API client secret credential
+
+        Raises:
+            Exception:
+                * If client id is not supplied as an argument or set as the
+                  EVERACTIVE_CLIENT_ID environment variable
+                * If client secret is not supplied as an argument or set as the
+                  EVERACTIVE_CLIENT_SECRET environment variable
+        """
         self._client_id = utils.coalesce([client_id, os.getenv("EVERACTIVE_CLIENT_ID")])
 
         if self._client_id is None:
@@ -58,15 +89,14 @@ class ApiConnection:
                 f"or set as environment variable EVERACTIVE_CLIENT_SECRET."
             )
 
-    def _create_session(self):
-        """Establish an Oauth2 session with the Everactive API."""
-
+    def _create_session(self) -> None:
+        """Establish an OAuth2 session with the Everactive API."""
         adapter = requests.adapters.HTTPAdapter(max_retries=3)
         client = oauthlib.oauth2.BackendApplicationClient(client_id=self._client_id)
         self._session = requests_oauthlib.OAuth2Session(client=client)
         self._session.mount(self._base_url, adapter)
 
-    def _authenticate(self):
+    def _authenticate(self) -> None:
         """Authenticate to the Everactive API."""
         token_url = urllib.parse.urljoin(self._base_url, "auth/token")
         log.debug(f"Fetching oauth token from: {token_url}")
@@ -80,7 +110,18 @@ class ApiConnection:
         log.info("Authenticated to the Everactive API")
 
     def get(self, url: str) -> Dict:
+        """Retrieve results via HTTP GET for specified Everactive API endpoint.
 
+        Args:
+            url: Requested API endpoint URL as string, relative to base API URL
+                e.g. ds/v1/eversensors/{eversensor_mac_address}/readings
+                    or ds/v1/evergateways/{evergateway_id}
+
+        Returns:
+            * If GET is successful and response can be parsed, returns a Dict containing
+            response data
+            * If GET or response parsing fails, returns bad response object
+        """
         request_url = urllib.parse.urljoin(self._base_url, url)
 
         try:
@@ -98,8 +139,22 @@ class ApiConnection:
         sort_by: str,
         query_params: Optional[Dict] = {},
         page_size: Optional[int] = DEFAULT_PAGE_SIZE,
-    ):
-        """Aggregate paginated GET results from Everactive API endpoints."""
+    ) -> List[Dict]:
+        """Return aggregated paginated GET results from Everactive API endpoint.
+
+        Args:
+            url: Requested API endpoint URL as string, relative to base API URL
+                e.g. ds/v1/eversensors or ds/v1/evergateways
+            sort_by: string name of parameter to sort results by, e.g. serial-number
+            query_params: Optional Dict containing string query params, in format:
+                {"param-name-1" : "param-value-1", param-name-2" : "param-value-2", ...}
+            page_size: Optional int specifying the page size for paginated results
+
+        Returns:
+            * If GETs are successful and responses can be parsed, returns aggregated
+            response data as List of Dicts
+            * If a GET or response parsing fails, returns bad response object
+        """
         paginated_results = []
         request_url = urllib.parse.urljoin(self._base_url, url)
 
@@ -159,7 +214,7 @@ class ApiConnection:
             log.error(f"Error requesting url: {request_url}")
             return response
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Close session when object is deleted."""
         if self._session:
             self._session.close()
