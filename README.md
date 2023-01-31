@@ -23,3 +23,7 @@ The notebook can be run locally with Docker or on the cloud in Google Colab:
         <span><b>Instructions for running in Google Colab</b></span>
     </a>
 </p>
+
+<br>
+
+If you haven't already created your Everactive API credentials as a part of your [ENV+ EvalKit setup](https://support.everactive.com/hc/en-us/articles/4420929277975-ENV-Evaluation-Kit-Quick-Start-Guide), check out our [Knowledge Base article on how to set up your API credentials](https://support.everactive.com/hc/en-us/articles/6279483691159-Creating-Your-First-API-Credential).
