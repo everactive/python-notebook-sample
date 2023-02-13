@@ -4,7 +4,10 @@ We've created a Dockerized version of the notebook that can be run locally on yo
 
 ## Instructions
 
-1. Clone the [notebook repo](https://github.com/everactive/python-notebook-sample) to your local machine.
+1. Clone the [notebook repo](https://github.com/everactive/python-notebook-sample) to your local machine:
+   ```
+   git clone https://github.com/everactive/python-notebook-sample.git
+   ```
 
 1. Open a terminal and navigate to the root directory of the cloned repo.
 
