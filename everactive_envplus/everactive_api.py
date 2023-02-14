@@ -9,6 +9,17 @@ import everactive_envplus.connection as connection
 
 DEFAULT_OUTPUT_FORMAT = "json"
 
+RAIL_COUNT_INDEX2NAME = {
+    0: "PV_IN",
+    1: "TEG_IN",
+    2: "VCAP_SRC",
+    3: "VCAP_LD",
+    4: "1P8",
+    5: "1P2",
+    6: "0P9",
+    7: "VADJ",
+}
+
 
 class EveractiveApi:
     """Class to provide a wrapper/client library around Everactive Data Services API
@@ -99,6 +110,30 @@ class EveractiveApi:
         results = self._api.get(
             f"ds/v1/eversensors/{mac_address}/readings?start-time={start_time}&end-time={end_time}"
         )
+
+        # Reformat rail count data from different schemas into a single format.
+        for result in results:
+
+            if "railCounts" in result.keys():
+                rail_counts = result.pop("railCounts")
+
+                cleaned_rail_counts = {}
+
+                for rail_count in rail_counts["counts"]:
+                    rail_count_name = RAIL_COUNT_INDEX2NAME[rail_count["index"]]
+
+                    cleaned_rail_counts[rail_count_name] = {
+                        "count": rail_count["count"],
+                        "overflow": rail_count["overflow"],
+                    }
+
+                    result["railCounts"] = cleaned_rail_counts
+            else:
+                if "loadCounts" in result.keys():
+                    load_counts = result.pop("loadCounts")
+                    result["railCounts"] = {
+                        "PV_IN": {"count": load_counts[0]["count"], "overflow": None}
+                    }
 
         return self._format_results(results, output_format)
 
