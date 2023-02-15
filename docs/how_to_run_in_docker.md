@@ -15,7 +15,7 @@ We've created a Dockerized version of the notebook that can be run locally on yo
 
 1. Once the Docker image is built, run `./run.sh` to start the container. The run script will automate setup of the Docker container and JupyterLab server for you, and will expose the notebook so that you can interact with it via a local web browser on your computer.
 
-   Note that you can supply your Everactive API credentials when invoking the run script (as opposed to providing the credentials in the notebook itself). To do so, include the `EVERACTIVE_CLIENT_ID` and `EVERACTIVE_CLIENT_SECRET` environment variables in the script invocation command:
+   Note that you can supply your [Everactive API credentials](https://support.everactive.com/hc/en-us/articles/6279483691159-Creating-Your-First-API-Credential) when invoking the run script (as opposed to providing the credentials in the notebook itself). To do so, include the `EVERACTIVE_CLIENT_ID` and `EVERACTIVE_CLIENT_SECRET` environment variables in the script invocation command:
 
    ```
    EVERACTIVE_CLIENT_ID=xxxxxxx EVERACTIVE_CLIENT_SECRET=xxxxxxx ./run.sh
