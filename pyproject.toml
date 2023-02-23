@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "everactive_envplus"
-version = "0.0.1"
+version = "0.0.2"
 description = "Library to support Everactive ENV+ EvalKit sample Python notebook"
 authors = ["Rachel House <rachel.house@everactive.com>"]
 

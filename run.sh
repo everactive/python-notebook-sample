@@ -1,11 +1,47 @@
 #!/bin/bash
 
+function cleanup_running_container() {
+    # Clean up the running Docker container.
+
+    RUNNING_CONTAINER=`docker ps -f name=everactive-envplus-sample-notebook -q`
+
+    if ! [[ -z $RUNNING_CONTAINER ]]
+    then
+        echo ""
+        echo "Stopping the running Docker container (${RUNNING_CONTAINER})..."
+        docker container stop $RUNNING_CONTAINER  > /dev/null
+    fi
+}
+
+# Call cleanup for trapped Ctl+C.
+trap graceful_interrupt INT
+function graceful_interrupt() {
+    cleanup_running_container
+    exit 0
+}
+
+# Call cleanup for Exit.
+trap graceful_exit EXIT
+function graceful_exit() {
+    cleanup_running_container
+    echo "Done."
+}
+
 echo "Everactive ENV+ EvalKit Exploration Notebook (Dockerized)"
 echo ""
 
 # Pull Everactive API credentials if available as environs.
 CLIENT_ID="${EVERACTIVE_CLIENT_ID:-''}"
 CLIENT_SECRET="${EVERACTIVE_CLIENT_SECRET:-''}"
+
+# Check if docker container is already running for some reason.
+EXISTING_CONTAINER_ID=`docker ps -f name=everactive-envplus-sample-notebook -q`
+
+if ! [[ -z $EXISTING_CONTAINER_ID ]]
+then
+    echo "Terminating existing instance of everactive-envplus-sample-notebook container..."
+    docker container rm -f $EXISTING_CONTAINER_ID > /dev/null
+fi
 
 # Start a Docker container with the current repo directory mounted as a volume.
 echo "Starting Docker container..."
@@ -46,10 +82,3 @@ fi
 
 echo ""
 read -p "Press ENTER to stop JupyterLab and stop the Docker container."
-
-# Stop the Docker container.
-echo ""
-echo "Stopping JupyterLab and Docker container..."
-docker container stop $CONTAINER_ID  > /dev/null
-
-echo "Done."
